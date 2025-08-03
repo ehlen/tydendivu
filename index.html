@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Týden divů 2025 - Schedule</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; color: #333; }
+    header { background: #2c3e50; color: white; padding: 1em; text-align: center; }
+    .day { background: white; margin: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .day-header { background: #3498db; color: white; padding: 10px; cursor: pointer; font-weight: bold; }
+    .events { display: none; padding: 10px; }
+    .event { padding: 5px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .event:last-child { border-bottom: none; }
+    .calendar-btn { background: #2ecc71; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+    .toggle-lang { position: fixed; top: 10px; right: 10px; background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>Týden divů 2025</header>
+  <button class="toggle-lang" onclick="toggleLanguage()">English</button>
+
+  <div id="schedule"></div>
+
+  <script>
+    const schedule = [
+      {
+        date: "Pátek 01.08.2025",
+        events: [
+          { time: "18:00", cs: "Seznamovací večírek (PIMLICO – U Přemka)", en: "Welcome Party (PIMLICO – U Přemka)" },
+          { time: "19:00", cs: "Macháček (Macháček aréna)", en: "Macháček (Macháček Arena)" },
+          { time: "21:00", cs: "8 statečných – Masters", en: "8 Brave – Masters" },
+          { time: "22:00", cs: "Promítání dokumentu TD + historie", en: "TD Documentary & History Screening" }
+        ]
+      },
+      {
+        date: "Sobota 02.08.2025",
+        events: [
+          { time: "13:00", cs: "Motanice (Kolofíkovo nábřeží)", en: "Dizzy Race (Kolofíkovo nábřeží)" },
+          { time: "14:00", cs: "Pití piva na hlavě (Kolofíkovo nábřeží)", en: "Beer Drinking on Head (Kolofíkovo nábřeží)" },
+          { time: "15:00", cs: "Přetahování lanem (Kolofíkovo nábřeží)", en: "Tug of War (Kolofíkovo nábřeží)" },
+          { time: "17:00", cs: "Brod (Kolofíkovo nábřeží)", en: "Stream Crossing (Kolofíkovo nábřeží)" },
+          { time: "18:00", cs: "Memoriál Táni Štěrbové - Kuželky (Kolofíkovo nábřeží)", en: "Táňa Štěrbová Memorial – Bowling Pins (Kolofíkovo nábřeží)" },
+          { time: "18:30", cs: "Předkolo mariáše (Evžen – Beethovenova ulice)", en: "Mariáš Preliminaries (Evžen – Beethovenova ulice)" }
+        ]
+      },
+      {
+        date: "Neděle 03.08.2025",
+        events: [
+          { time: "10:00", cs: "Kláda (Areál Zdraví Kylešovice)", en: "Log Fight (Areál Zdraví Kylešovice)" },
+          { time: "13:00", cs: "Plivání oliv (Orlovna, Kylešovice)", en: "Olive Spitting (Orlovna, Kylešovice)" },
+          { time: "14:00", cs: "Horký brambor (Orlovna, Kylešovice)", en: "Hot Potato (Orlovna, Kylešovice)" },
+          { time: "17:00", cs: "Poker (U Přemka – poker aréna)", en: "Poker (U Přemka – Poker Arena)" },
+          { time: "18:00", cs: "Mariáš – 1. kolo (Evžen – Beethovenova ulice)", en: "Mariáš – 1st Round (Evžen – Beethovenova ulice)" }
+        ]
+      },
+      {
+        date: "Pondělí 04.08.2025",
+        events: [
+          { time: "17:00", cs: "SCLE – B-TEAM (R- PIMLICO)", en: "SCLE – B-TEAM (R- PIMLICO)" },
+          { time: "17:00", cs: "CST – PIVOŇKA (R- GUMMA)", en: "CST – PIVOŇKA (R- GUMMA)" },
+          { time: "18:00", cs: "UNIVERSITA – GUMMA (R- CST)", en: "UNIVERSITA – GUMMA (R- CST)" },
+          { time: "18:00", cs: "PIMLICO – UGANDA (R- SCLE)", en: "PIMLICO – UGANDA (R- SCLE)" },
+          { time: "20:00", cs: "Bowling (Raketa bowling – Krnovská ulice)", en: "Bowling (Raketa bowling – Krnovská ulice)" }
+        ]
+      },
+      {
+        date: "Úterý 05.08.2025",
+        events: [
+          { time: "17:00", cs: "SCLE – GUMMA (R- PIVOŇKA)", en: "SCLE – GUMMA (R- PIVOŇKA)" },
+          { time: "17:00", cs: "CST – UGANDA (R- UNIVERSITA)", en: "CST – UGANDA (R- UNIVERSITA)" },
+          { time: "18:00", cs: "UNIVERSITA – B-TEAM (R- UGANDA)", en: "UNIVERSITA – B-TEAM (R- UGANDA)" },
+          { time: "18:00", cs: "PIMLICO – PIVOŇKA (R- GUMMA)", en: "PIMLICO – PIVOŇKA (R- GUMMA)" },
+          { time: "20:00", cs: "Mariáš – 2. kolo (Evžen – Beethovenova ulice)", en: "Mariáš – 2nd Round (Evžen – Beethovenova ulice)" }
+        ]
+      },
+      {
+        date: "Středa 06.08.2025",
+        events: [
+          { time: "17:00", cs: "SCLE – UNIVERSITA (R- PIVOŇKA)", en: "SCLE – UNIVERSITA (R- PIVOŇKA)" },
+          { time: "17:00", cs: "CST – PIMLICO (B-TEAM)", en: "CST – PIMLICO (B-TEAM)" },
+          { time: "18:00", cs: "GUMMA – B-TEAM (R- CST)", en: "GUMMA – B-TEAM (R- CST)" },
+          { time: "18:00", cs: "UGANDA – PIVOŇKA (SCLE)", en: "UGANDA – PIVOŇKA (SCLE)" },
+          { time: "20:00", cs: "Týmové večírky", en: "Team Parties" }
+        ]
+      },
+      {
+        date: "Čtvrtek 07.08.2025",
+        events: [
+          { time: "17:00", cs: "4A – 4B (R-1A/2B)", en: "4A – 4B (R-1A/2B)" },
+          { time: "17:00", cs: "2A – 2B (R-4A/3B)", en: "2A – 2B (R-4A/3B)" },
+          { time: "18:00", cs: "3A – 3B (R-1B/2A)", en: "3A – 3B (R-1B/2A)" },
+          { time: "18:00", cs: "1A – 1B (R-3A/4B)", en: "1A – 1B (R-3A/4B)" },
+          { time: "20:00", cs: "Mariáš – malé a velké finále (Evžen – Beethovenova ulice)", en: "Mariáš – Small & Grand Final (Evžen – Beethovenova ulice)" }
+        ]
+      },
+      {
+        date: "Pátek 08.08.2025",
+        events: [
+          { time: "16:00", cs: "Fotbal (umělá tráva Kylešovice)", en: "Football (Artificial Turf Kylešovice)" },
+          { time: "17:00", cs: "Fotbal ŽENY (umělá tráva Kylešovice)", en: "Women's Football (Artificial Turf Kylešovice)" },
+          { time: "18:00", cs: "Mariáš", en: "Mariáš" },
+          { time: "20:00", cs: "OLDIE'S party (Orlovna, Kylešovice)", en: "OLDIE'S party (Orlovna, Kylešovice)" }
+        ]
+      },
+      {
+        date: "Sobota 09.08.2025",
+        events: [
+          { time: "12:00", cs: "Hod vejcem (Kolofíkovo nábřeží)", en: "Egg Throwing (Kolofíkovo nábřeží)" },
+          { time: "13:00", cs: "Hod galošem (Kolofíkovo nábřeží)", en: "Boot Throwing (Kolofíkovo nábřeží)" },
+          { time: "14:00", cs: "Skluz pro lahváč (Kolofíkovo nábřeží)", en: "Beer Slide (Kolofíkovo nábřeží)" },
+          { time: "19:00", cs: "46. Ples Ugandy (Chvalíkovice)", en: "46th Uganda Ball (Chvalíkovice)" },
+          { time: "20:00", cs: "Sedm statečných", en: "7 Brave" }
+        ]
+      }
+    ];
+
+    let currentLang = "cs";
+
+    function downloadICS(date, time, title) {
+      const match = date.match(/\d{2}\.\d{2}\.\d{4}/);
+      const [day, month, year] = match ? match[0].split(".") : ["01","08","2025"];
+      const dt = new Date(`${year}-${month}-${day}T${time}:00`);
+      const dtstamp = dt.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const dtend = new Date(dt.getTime() + 60*60*1000).toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTAMP:${dtstamp}
+DTSTART:${dtstamp}
+DTEND:${dtend}
+SUMMARY:${title}
+END:VEVENT
+END:VCALENDAR`;
+      const blob = new Blob([ics], {type: 'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = title.replace(/\s+/g,"_") + ".ics";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderSchedule() {
+      const container = document.getElementById('schedule');
+      container.innerHTML = '';
+      schedule.forEach(day => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'day';
+        const header = document.createElement('div');
+        header.className = 'day-header';
+        header.textContent = day.date;
+        header.onclick = () => {
+          const eventsDiv = dayDiv.querySelector('.events');
+          eventsDiv.style.display = eventsDiv.style.display === 'block' ? 'none' : 'block';
+        };
+        const eventsDiv = document.createElement('div');
+        eventsDiv.className = 'events';
+        day.events.forEach(ev => {
+          const evDiv = document.createElement('div');
+          evDiv.className = 'event';
+          const title = currentLang === 'cs' ? ev.cs : ev.en;
+          evDiv.innerHTML = `<span>${ev.time} ${title}</span><button class="calendar-btn" onclick="downloadICS('${day.date}','${ev.time}','${title}')">📅</button>`;
+          eventsDiv.appendChild(evDiv);
+        });
+        dayDiv.appendChild(header);
+        dayDiv.appendChild(eventsDiv);
+        container.appendChild(dayDiv);
+      });
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'cs' ? 'en' : 'cs';
+      document.querySelector('.toggle-lang').textContent = currentLang === 'cs' ? 'English' : 'Česky';
+      renderSchedule();
+    }
+
+    renderSchedule();
+  </script>
+</body>
+</html>
